@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/home.css">
+    <title>Weekend Discharge </title>
+</head>
+<body>
+   <main class="container">
+    <h2 id="page-header">Weekend Discharge Request</h2>  
+
+    <form>
+     <div class="request-container">
+        <div class="request-info">
+            <div class="discharge-input">
+        <p id ="discharge-text">Name</p>
+        <input type="text" id ="discharge-input-text" name="dischargeRequestedBy" >
+    </div>
+    <div class="discharge-input">
+        <p id = "discharge-text">Extension</p>
+        <input type="text" id ="discharge-input-text"  name="dischargeExtensionNumber" >
+    </div>
+    <div class="discharge-input">
+        <p id ="discharge-text">Department</p>
+        <input type="text" id ="discharge-input-text"  name="dischargeDeparment" >
+    </div>
+    </div>
+    <div class="request-hospital">
+    <form>
+    <p id="hospital-header">Hospital/Medical Office</p>
+    <div class="hospital-options">
+    <div class="hospital-input">
+    <label for="PHWH">PHWH</label>
+    <input type="radio" id="hospital-radio-options" name="dischargeHospital" value="PHWH">
+</div>
+<div class="hospital-input">
+    <label for="PHDH">PHDH</label>
+    <input type="radio" id="hospital-radio-options" name="dischargeHospital" value="PHDH">
+</div>
+<div class="hospital-input">
+
+    <label for="PHGSH">PHGSH</label>
+    <input type ="radio" id="hospital-radio-options" name="dischargeHospital" value="PHGSH">
+</div>
+<div class="hospital-input">
+
+    <label for="PHP">PHP</label>
+    <input type="radio" id="hospital-radio-options" name="dischargeHospital" value="PHP">
+</div>
+    </div>
+</form>
+    </div>
+</div>
+<form>
+    <h3 id="page-header">Patient Information</h3>  
+    <div class="patient-information">
+        <div class="patient-information-left">
+            <div class="patient-information-input">
+        <p id ="patient-information-text">First Name</p>
+        <input type="text" id ="patient-input-text"  name="patientFirstName" placeholder="John">
+    </div>
+
+        <div class="patient-information-input">
+        <p id ="patient-information-text">Last Name</p>
+        <input type="text"  id ="patient-input-text"  name="patientLastName" placeholder="Doe">
+    </div>
+
+        <div class="patient-information-input">
+        <p id ="patient-information-text">Phone Number</p>
+        <input type="text"  id ="patient-input-text"  name="patientPhoneNumber" placeholder="(123) 456-7890">
+    </div>
+
+        <div class="patient-information-input">
+        <p id ="patient-information-text">Medical Record #</p>
+        <input type="text" id ="patient-input-text"   name="patientMRN" placeholder="0123456">
+    </div>
+
+        <div class="patient-information-input">
+        <p id ="patient-information-text">Date of Birth</p>
+        <input type="text" id ="patient-input-text"   name="patientDoB" placeholder="12/25/1980">
+    </div>
+
+    </div>
+    <div class="patient-information-right">
+        <div class="patient-information-input">
+        <p id ="patient-information-text">Height</p>
+        <input type="text" id ="patient-input-text"  name="patientHeight" placeholder="5 ' 10">
+    </div>
+    <div class="patient-information-input">
+        <p id ="patient-information-text">Weight</p>
+        <input type="text" id ="patient-input-text"  name="patientWeight" placeholder="185">
+    </div>
+    <div class="patient-information-input">
+        <p id ="patient-information-text">Gender</p>
+        <input type="text"id ="patient-input-text"  name="patientGender" placeholder="Female/Male">
+    </div>
+    <div class="patient-information-input">
+        <p id ="patient-information-text">Primary Language</p>
+        <input type="text" id ="patient-input-text"  name="patientLanguage" placeholder="English">
+    </div>
+    <div class="patient-information-input">
+        <p id ="patient-information-text">Homeless</p>
+        <input type="text" id ="patient-input-text"  name="patientHomelessStatus" placeholder="Yes/No">
+    </div>
+
+    </div>
+</form>
+    </div>
+    <form>
+        <h3 id="page-header">Trip Information</h3>  
+        <div class="trip-information">
+        <div class="trip-date-time-container">
+        <div class="trip-information-input">
+        <p id ="trip-information-text" >Date</p>
+        <!-- DT stands fro Date Time-->
+        <input type="date" id ="trip-input-DT" name="patientDischargeDate" value="2025-01-04">
+    </div>
+        <div class="trip-information-input">
+        <p id ="trip-information-text" >Time</p>
+        <input type="time" id ="trip-input-DT" name="patientDischargeTime" value="12:00">
+    </div>
+    </div>
+    <div class="trip-address">
+    <p id ="trip-information-text" >Address</p>
+        <input type="text" id="trip-address-input" name="patientDischargeAddress" placeholder="12401 Washington Blvd, Whittier, CA 90602">
+    </div>
+    <div class="trip-transportation-type">
+        <input type="button" id ="trip-transportation-Ambu" value="Ambulatory"><input type="button" id="trip-transportation-WC" value="Wheelchair"><input type="button" id="trip-transportation-Gurney" value="Gurney">
+    </div>
+        <input type="radio" name="patientIsolation" value="ISO"> Isoloation <input type="radio" name="patientOxygen" value="Oxygen"> Oxygen
+        <textarea name="patientComments" rows="10" cols="50" placeholder="Enter additional information here"></textarea>
+    </div>
+        <!-- Add room number field(s)-->
+
+    </form>
+</main>
+
+</body>
+</html>

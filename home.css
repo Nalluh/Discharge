@@ -1,0 +1,150 @@
+.container
+{
+    display: flex;
+    flex-direction: column;
+}
+
+.request-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+align-items: center;
+}
+.patient-information{
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+}
+.patient-information-left,.patient-information-right{
+display: flex;
+flex-direction: column;
+margin: 10px;
+
+}
+
+
+.request-info{
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+}
+.request-hospital{
+    display: flex;
+    flex-direction: column;
+}
+.discharge-input{
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
+}
+.hospital-input{
+    display: flex;
+    flex-direction: column;
+    padding: 15px 10px;
+}
+
+#discharge-text,#patient-information-text{
+    width: 115px;
+    margin-right: 5px;
+}
+#patient-information-text{
+    margin: 0px 5px;
+}
+#discharge-input-text{
+    width: 250px;
+}
+.hospital-options{
+    display: flex;
+    flex-direction: row;
+    
+}
+
+#hospital-radio-options{
+    margin-top: 40px;
+    width: 25px;
+    height: 25px;
+}
+
+#page-header{
+    text-align: center;
+}
+#hospital-header{
+    padding-left:10px;
+    font-weight: bold;
+}
+
+    
+
+.patient-information-input{
+    display: flex;
+    flex-direction: row;
+    padding: 15px 10px;
+}
+
+#patient-input-text{
+    height: 21.5px;
+width: 250px;
+}
+
+.trip-information{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.trip-date-time-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding:15px;
+
+}
+.trip-information-input{
+    display: flex;
+    flex-direction: row;
+    margin:0px 25px;
+}
+
+#trip-information-text{
+    margin: 2px 15px 0px 0px;
+}
+
+#trip-input-DT{
+    width: 250px;
+    text-align: center;
+    height: 21.5px;
+}
+
+.trip-address{
+    display: flex;
+    flex-direction: row;
+}
+
+#trip-address-input{
+    width: 600px;
+    height: 21.5px;
+}
+
+.trip-transportation-type{
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    padding: 20px;
+}
+
+#trip-transportation-Ambu,#trip-transportation-WC,#trip-transportation-Gurney{
+    margin: 10px;
+    padding: 5px;
+    background-color:lightgray;
+    border: none;
+    border-radius: 9px;
+    height: 45px;
+    width: 100px;
+    transition: background-color 1.0s ease; 
+}
+
+input[type="button"]:hover {
+    cursor: pointer;
+    background-color: gray !important;
+}
