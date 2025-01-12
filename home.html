@@ -10,7 +10,7 @@
    <main class="container">
     <h2 id="page-header">Weekend Discharge Request</h2>  
 
-    <form>
+    <form id="patient-discharge-requestor-form" class="form-information">
      <div class="request-container">
         <div class="request-info">
             <div class="discharge-input">
@@ -27,7 +27,6 @@
     </div>
     </div>
     <div class="request-hospital">
-    <form>
     <p id="hospital-header">Hospital/Medical Office</p>
     <div class="hospital-options">
     <div class="hospital-input">
@@ -52,7 +51,7 @@
 </form>
     </div>
 </div>
-<form>
+<form id ="patient-information-form" class="form-information">
     <h3 id="page-header">Patient Information</h3>  
     <div class="patient-information">
         <div class="patient-information-left">
@@ -100,14 +99,14 @@
         <input type="text" id ="patient-input-text"  name="patientLanguage" placeholder="English">
     </div>
     <div class="patient-information-input">
-        <p id ="patient-information-text">Homeless</p>
-        <input type="text" id ="patient-input-text"  name="patientHomelessStatus" placeholder="Yes/No">
+        <p id ="patient-information-text">Room Number</p>
+        <input type="text" id ="patient-input-text"  name="patientRoomNumber" placeholder="1234">
     </div>
 
     </div>
 </form>
     </div>
-    <form>
+    <form id ="trip-information-form" class="form-information">
         <h3 id="page-header">Trip Information</h3>  
         <div class="trip-information">
         <div class="trip-date-time-container">
@@ -127,14 +126,131 @@
     </div>
     <div class="trip-transportation-type">
         <input type="button" id ="trip-transportation-Ambu" value="Ambulatory"><input type="button" id="trip-transportation-WC" value="Wheelchair"><input type="button" id="trip-transportation-Gurney" value="Gurney">
+        <div class="checkbox-container">
+            <label class="checkbox-label" for="oxygen">Oxygen</label>
+            <input type="checkbox" id="oxygen" name="patientOxygen" value="Oxygen">
+          </div>
+        
+          <div id ="oxygenAmount" class="checkbox-container">
+            <label class="checkbox-label" for="OxygenAmount">Amount</label>
+            <input type="number" id="oxygen-input" name="patientOxygenAmount" placeholder="Liter(s)">
+          </div>
+
+          <div class="checkbox-container">
+            <label class="checkbox-label" for="isolation">Isolation</label>
+            <input type="checkbox" id="isolation" name="patientIsolation" value="ISO">
+          </div>
     </div>
-        <input type="radio" name="patientIsolation" value="ISO"> Isoloation <input type="radio" name="patientOxygen" value="Oxygen"> Oxygen
-        <textarea name="patientComments" rows="10" cols="50" placeholder="Enter additional information here"></textarea>
+        <textarea name="patientComments" rows="5" cols="85" placeholder="Enter additional information here"></textarea>
     </div>
-        <!-- Add room number field(s)-->
 
     </form>
-</main>
+<div class="button-container">
+    <button id="discharge-request-submission">Submit</button>
+</div>
 
+</main>
+<script>
+    "use strict";
+
+    class PatientDischargeRequestor {
+  constructor(name, extension, department, hospital) {
+    this.name = name;
+    this.extension = extension;
+    this.department = department;
+    this.hospital = hospital;
+  }
+  
+}
+
+    class Patient {
+  constructor(firstName,lastName,phoneNumber,MRN, dob, height, weight, gender,primaryLanguage, roomNumber) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.phoneNumber = phoneNumber;
+    this.MRN = MRN;
+    this.dob = dob;
+    this.height = height;
+    this.weight = weight;
+    this.gender = gender;
+    this.primaryLanguage = primaryLanguage;
+    this.roomNumber = roomNumber;
+  }
+
+}
+
+    class Trip{
+        constructor(date,time, address, transportationType,oxygenNeeded,amountOfOxygen,isolation,){
+            this.date = date;
+            this.time = time;
+            this.address = address;
+            this.transportationType = transportationType;
+            this.oxygenNeeded = oxygenNeeded;
+            this.amountOfOxygen = amountOfOxygen;
+            this.isolation = isolation;
+        }
+    }
+
+    const oxygenStatus = document.getElementById("oxygen");
+    //when checkbox is clicked we append an input field to acquire the 
+    // amount of oxygen that is needed 
+    oxygenStatus.addEventListener("change",() =>
+        {
+            let oxygenInputAmount = document.getElementById('oxygenAmount');
+            // if checkbox is selected we change the dispaly to reveal the input field
+            if(oxygenStatus.checked){
+                oxygenInputAmount.style.display = 'flex';
+            }// if checkbox is not selected we hide the input field 
+            else{
+                oxygenInputAmount.style.display = 'none';
+            }
+        }
+    )
+
+
+    document.getElementById("discharge-request-submission").addEventListener("click", (event) => {
+      event.preventDefault(); 
+
+      //get form values and create a requestor instance
+      let name = document.getElementsByName("dischargeRequestedBy")[0].value;
+      let extension = document.getElementsByName("dischargeExtensionNumber")[0].value;
+      let department = document.getElementsByName("dischargeDeparment")[0].value;
+      let hospital = document.getElementsByName("dischargeHospital")[0].value;
+      const requestor = new PatientDischargeRequestor(name, extension, department, hospital);
+
+    //get form values and create a patient instance
+      let firstName = document.getElementsByName("patientFirstName")[0].value;
+      let lastName = document.getElementsByName("patientLastName")[0].value;
+      let phoneNumber = document.getElementsByName("patientPhoneNumber")[0].value;
+      let MRN = document.getElementsByName("patientMRN")[0].value;
+      let dob = document.getElementsByName("patientDoB")[0].value;
+      let height = document.getElementsByName("patientHeight")[0].value;
+      let weight = document.getElementsByName("patientWeight")[0].value;
+      let gender = document.getElementsByName("patientGender")[0].value;
+      let primaryLanguage = document.getElementsByName("patientLanguage")[0].value;
+      let roomNumber = document.getElementsByName("patientRoomNumber")[0].value;
+
+      const patient = new Patient(firstName, lastName, phoneNumber, MRN, dob, height, weight,gender,primaryLanguage,roomNumber);
+      
+
+    //get form values and create a trip instance
+      let date = document.getElementsByName("patientDischargeDate")[0].value;
+      let time = document.getElementsByName("patientDischargeTime")[0].value;
+      let address = document.getElementsByName("patientDischargeAddress")[0].value;
+      //TODO implement values to transpo type buttons 
+      let transportationType ="default";
+      let oxygen = oxygenStatus.checked;
+      let isolation = document.getElementById("isolation").checked;
+      //check if oxygen is true if so return amount else return 0
+      let amountOfOxygen = oxygen ? document.getElementsByName("patientOxygenAmount")[0].value + "L" : 0;
+
+
+      const trip = new Trip(date,time,address,transportationType,oxygen,amountOfOxygen,isolation);
+      
+      console.log(requestor,patient,trip);
+      console.log(oxygenStatus.checked);
+
+    });
+</script>
 </body>
 </html>
