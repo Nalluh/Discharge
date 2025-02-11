@@ -1,0 +1,10 @@
+node_modules/
+TESTDB.JS
+package.json
+package-lock.json
+# Ignore log files
+*.log
+
+# Ignore OS-specific files (like macOS, Windows)
+.DS_Store
+Thumbs.db

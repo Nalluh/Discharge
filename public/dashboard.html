@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    header{
+        background-color: #f8f9fa; 
+        padding: 1rem; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1{
+        margin: 0; 
+        color: #333; 
+        font-family: Arial, sans-serif;
+    }
+    .header-container{
+        display: flex; 
+        align-items: center;
+        justify-content: space-between;
+        margin: 0px 10px;
+    }
+    .home-bg-image{
+        width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    position: relative;
+    }
+    .quick-discharge{
+        background-color: #73ff9d; 
+        border: none;
+        border-radius: 20px;
+        font-size: 24px;
+        padding: 7px;
+
+    }
+    .quick-discharge:hover{
+        cursor: pointer;
+        
+    }
+    .column-container{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+    .column-one,.column-two,.column-three{
+        border: 2px solid black;
+    padding: 20px;
+    margin: 10px;        
+    background-color: white; }
+</style>
+<body>
+    <header>
+        <div class="header-container">
+          <h1>PatientPathway</h1>
+         <a href="/form"><button class="quick-discharge">&#43;</button></a>
+        </div>
+      </header>
+      <div >
+        <img class="home-bg-image" src="/images/doc-patient.jpg" alt="Feature Image">
+        <div class="column-container">
+            <div class="column-one"></div>
+            <div class="column-two"></div>
+            <div class="column-three"></div>
+        </div>
+      </div>
+</body>
+</html>

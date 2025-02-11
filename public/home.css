@@ -183,3 +183,33 @@ input[type="button"]:hover {
     display: flex;
     justify-content: center;
   }
+
+  header{
+    background-color: #f8f9fa; 
+    padding: 1rem; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+h1{
+    margin: 0; 
+    color: #333; 
+    font-family: Arial, sans-serif;
+}
+.header-container{
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+    margin: 0px 10px;
+}
+
+.back-home{
+    border: none;
+    background-color: #f8f9fa; 
+    font-family: Arial, sans-serif;
+    border-radius: 20px;
+    font-size: 24px;
+}
+.back-home:hover{
+    cursor: pointer;
+    background-color: #e9ecef;
+    padding: 4px;
+}
