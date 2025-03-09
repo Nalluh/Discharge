@@ -34,41 +34,76 @@
         border-radius: 20px;
         font-size: 24px;
         padding: 7px;
+        margin-bottom: 5px;
 
     }
     .quick-discharge:hover{
         cursor: pointer;
         
     }
-    .column-container{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
+    table {
     position: absolute;
-    top: 50%;
+    top: 25%;
     left: 50%;
     transform: translate(-50%, -50%);
-    }
-    .column-one,.column-two,.column-three{
-        border: 2px solid black;
-    padding: 20px;
-    margin: 10px;        
-    background-color: white; }
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 70%;
+
+}
+
+th{
+    background-color: #427deb;
+}
+td{
+    background-color: white ;
+}
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+.header-search-and-add{
+   display: flex;
+}
+.search-bar{
+    margin-right: 55px;
+    margin-top: 8px;
+    width: 300px;
+    height: 25px;
+}
+
+   
 </style>
 <body>
     <header>
         <div class="header-container">
           <h1>PatientPathway</h1>
-         <a href="/form"><button class="quick-discharge">&#43;</button></a>
+          <div class="header-search-and-add">
+         <input class ="search-bar" type="search" placeholder="Search by Patient Name"><a href="/form"><button class="quick-discharge">&#43;</button></a>
+        </div>
         </div>
       </header>
       <div >
         <img class="home-bg-image" src="/images/doc-patient.jpg" alt="Feature Image">
-        <div class="column-container">
-            <div class="column-one"></div>
-            <div class="column-two"></div>
-            <div class="column-three"></div>
-        </div>
+       <table>
+        <tr>
+        <th>  Active Discharges </th>
+        <th>  Past Discharges </th>
+        <th>  All Discharges </th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>2</td>
+        <td>3</td>
+    </tr>   
+        
+       </table>
       </div>
 </body>
 </html>

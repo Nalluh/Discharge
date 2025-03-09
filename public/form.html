@@ -63,12 +63,12 @@
         <div class="patient-information-left">
             <div class="patient-information-input">
         <p id ="patient-information-text">First Name</p>
-        <input type="text" id ="patient-input-text"  name="patientFirstName" placeholder="John">
+        <input type="text" id ="patient-input-text"  name="patientFirstName" placeholder="John" required>
     </div>
 
         <div class="patient-information-input">
         <p id ="patient-information-text">Last Name</p>
-        <input type="text"  id ="patient-input-text"  name="patientLastName" placeholder="Doe">
+        <input type="text"  id ="patient-input-text"  name="patientLastName" placeholder="Doe" required>
     </div>
 
         <div class="patient-information-input">
@@ -78,23 +78,23 @@
 
         <div class="patient-information-input">
         <p id ="patient-information-text">Medical Record #</p>
-        <input type="text" id ="patient-input-text"   name="patientMRN" placeholder="0123456">
+        <input type="text" id ="patient-input-text"   name="patientMRN" placeholder="0123456" required>
     </div>
 
         <div class="patient-information-input">
         <p id ="patient-information-text">Date of Birth</p>
-        <input type="text" id ="patient-input-text"   name="patientDoB" placeholder="12/25/1980">
+        <input type="date" id ="patient-input-text"   name="patientDoB" placeholder="12/25/1980" >
     </div>
 
     </div>
     <div class="patient-information-right">
         <div class="patient-information-input">
         <p id ="patient-information-text">Height</p>
-        <input type="text" id ="patient-input-text"  name="patientHeight" placeholder="5 ' 10">
+        <input type="text" id ="patient-input-text" name="patientHeight" placeholder="70in">
     </div>
     <div class="patient-information-input">
         <p id ="patient-information-text">Weight</p>
-        <input type="text" id ="patient-input-text"  name="patientWeight" placeholder="185">
+        <input type="number" id ="patient-input-text"  name="patientWeight" placeholder="185lbs">
     </div>
     <div class="patient-information-input">
         <p id ="patient-information-text">Gender</p>
@@ -106,7 +106,7 @@
     </div>
     <div class="patient-information-input">
         <p id ="patient-information-text">Room Number</p>
-        <input type="text" id ="patient-input-text"  name="patientRoomNumber" placeholder="1234">
+        <input type="number" id ="patient-input-text"  name="patientRoomNumber" placeholder="1234">
     </div>
 
     </div>
@@ -131,7 +131,7 @@
         <input type="text" id="trip-address-input" name="patientDischargeAddress" placeholder="12401 Washington Blvd, Whittier, CA 90602">
     </div>
     <div class="trip-transportation-type">
-        <input type="button" id ="trip-transportation-Ambu" value="Ambulatory"><input type="button" id="trip-transportation-WC" value="Wheelchair"><input type="button" id="trip-transportation-Gurney" value="Gurney">
+        <input type="button" class="transportation-type" id ="trip-transportation-means" value="Ambulatory"><input type="button" class="transportation-type"  id="trip-transportation-means" value="Wheelchair"><input type="button" class="transportation-type"  id="trip-transportation-means" value="Gurney">
         <div class="checkbox-container">
             <label class="checkbox-label" for="oxygen">Oxygen</label>
             <input type="checkbox" id="oxygen" name="patientOxygen" value="Oxygen">
@@ -170,11 +170,11 @@
 }
 
     class Patient {
-  constructor(firstName,lastName,phoneNumber,MRN, dob, height, weight, gender,primaryLanguage, roomNumber) {
+  constructor(firstName,lastName,phoneNumber,mrn, dob, height, weight, gender,primaryLanguage, roomNumber) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.phoneNumber = phoneNumber;
-    this.MRN = MRN;
+    this.mrn = mrn;
     this.dob = dob;
     this.height = height;
     this.weight = weight;
@@ -186,7 +186,7 @@
 }
 
     class Trip{
-        constructor(date,time, address, transportationType,oxygenNeeded,amountOfOxygen,isolation,){
+        constructor(date,time, address, transportationType,oxygenNeeded,amountOfOxygen,isolation,additional_info){
             this.date = date;
             this.time = time;
             this.address = address;
@@ -194,6 +194,7 @@
             this.oxygenNeeded = oxygenNeeded;
             this.amountOfOxygen = amountOfOxygen;
             this.isolation = isolation;
+            this.additional_info = additional_info;
         }
     }
 
@@ -212,6 +213,12 @@
             }
         }
     )
+    let transportationType =''
+    document.querySelectorAll(".transportation-type").forEach(button => {
+        button.addEventListener("click", (event) => {
+            transportationType = button.value;
+        })
+    })
 
 
     document.getElementById("discharge-request-submission").addEventListener("click", (event) => {
@@ -228,7 +235,7 @@
       let firstName = document.getElementsByName("patientFirstName")[0].value;
       let lastName = document.getElementsByName("patientLastName")[0].value;
       let phoneNumber = document.getElementsByName("patientPhoneNumber")[0].value;
-      let MRN = document.getElementsByName("patientMRN")[0].value;
+      let mrn = document.getElementsByName("patientMRN")[0].value;
       let dob = document.getElementsByName("patientDoB")[0].value;
       let height = document.getElementsByName("patientHeight")[0].value;
       let weight = document.getElementsByName("patientWeight")[0].value;
@@ -236,27 +243,53 @@
       let primaryLanguage = document.getElementsByName("patientLanguage")[0].value;
       let roomNumber = document.getElementsByName("patientRoomNumber")[0].value;
 
-      const patient = new Patient(firstName, lastName, phoneNumber, MRN, dob, height, weight,gender,primaryLanguage,roomNumber);
+      const patient = new Patient(firstName, lastName, phoneNumber, mrn, dob, height, weight,gender,primaryLanguage,roomNumber);
       
 
     //get form values and create a trip instance
       let date = document.getElementsByName("patientDischargeDate")[0].value;
       let time = document.getElementsByName("patientDischargeTime")[0].value;
       let address = document.getElementsByName("patientDischargeAddress")[0].value;
-      //TODO implement values to transpo type buttons 
-      let transportationType ="default";
       let oxygen = oxygenStatus.checked;
       let isolation = document.getElementById("isolation").checked;
       //check if oxygen is true if so return amount else return 0
       let amountOfOxygen = oxygen ? document.getElementsByName("patientOxygenAmount")[0].value + "L" : 0;
-
-
-      const trip = new Trip(date,time,address,transportationType,oxygen,amountOfOxygen,isolation);
-      
-      console.log(requestor,patient,trip);
-      console.log(oxygenStatus.checked);
-
+    if(transportationType == ''){
+        transportationType = "None";
+    }
+      let additional_info = document.getElementsByName("patientComments")[0].value;
+      const trip = new Trip(date,time,address,transportationType,oxygen,amountOfOxygen,isolation,additional_info);
+        // send information to backend 
+      postDischargeRequest(requestor,patient,trip);
     });
+
+    async function postDischargeRequest(PatientDischargeRequestor,Patient,Trip){
+        const url = 'http://localhost:3000/discharges';
+        const postData = {
+           PatientDischargeRequestor:PatientDischargeRequestor,
+           Patient:Patient,
+           Trip:Trip
+        };
+        console.log(postData)
+        try{
+            let response = await fetch(url,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(postData),
+            });
+            if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+        }catch(error){
+            console.error('Error:', error);
+        }
+
+    }
+
+    
+
 </script>
 </body>
 </html>
