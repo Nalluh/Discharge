@@ -23,6 +23,46 @@ app.get('/', (req,res) =>
   res.sendFile(path.join(__dirname, 'public','dashboard.html'));
 });
 
+app.get('/search', (req,res) => {
+  //get url param
+  const patientName = req.query.query;
+
+  //dont query right away gain some context from
+  if(!patientName || patientName.length <2){
+    return res.json({results:[]})
+  }
+
+  // get patients with distinct mrn
+  const sql = 'SELECT DISTINCT mrn, first_name, last_name, patient_id FROM public."Patient" WHERE CONCAT(first_name, \' \', last_name) LIKE $1 LIMIT 10';
+
+  pool.query(sql, [`%${patientName}%`], (err,results) => {
+    if(err){
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Internal server error" });    
+    }
+    //send to frontend 
+    res.json({results});
+ 
+  })
+
+});
+
+//query for all information given a patient id
+app.get('/patients',(req,res) =>{
+  const patient_id = req.query.patient_id;
+
+  const sql ='SELECT * FROM public."Patient" AS p JOIN public."TripInformation" AS t ON p.patient_id = t.patient_id join public."DischargeRequestor" as dr ON p.req_id = dr.req_id WHERE p.patient_id = $1;'
+  pool.query(sql,[`${patient_id}`], (err,results) => {
+    if(err){
+      console.error("Database error:", err);
+      return res.status(500).json({ error: "Internal server error" });    
+    }
+    res.json({results});
+  })
+ 
+});
+
+
 //endpoint were we will handle posting to database
 app.post("/discharges", async (req, res) => {
   console.log("Request Body:", req.body ); 

@@ -73,6 +73,24 @@ td, th {
     height: 25px;
 }
 
+#search-results{
+    position:absolute;
+    top:45px;
+    right:140px ;
+    z-index: 1;
+}
+.search-result-list-item{
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ddd;
+   
+    cursor: pointer;
+    width: 250px;
+    list-style: none;
+}
+.search-result-list-item:hover{
+    background-color: grey;
+}
    
 </style>
 <body>
@@ -80,8 +98,10 @@ td, th {
         <div class="header-container">
           <h1>PatientPathway</h1>
           <div class="header-search-and-add">
-         <input class ="search-bar" type="search" placeholder="Search by Patient Name"><a href="/form"><button class="quick-discharge">&#43;</button></a>
+         <input class ="search-bar" type="search" placeholder="Search by Patient Name">
+         <a href="/form"><button class="quick-discharge">&#43;</button></a>
         </div>
+        <ul id ="search-results"></ul>
         </div>
       </header>
       <div >
@@ -105,5 +125,82 @@ td, th {
         
        </table>
       </div>
+      <script>
+
+`use strict`;
+
+
+// Add event listener to the search bar
+     let searchbar = document.querySelectorAll('.search-bar').forEach(input => {
+        // for debouncing the api call 
+        let timeout;
+        let data;
+        let counter =0;
+        const dropdown = document.getElementById('search-results');
+         input.addEventListener('input', (e) => {
+            //get value in search bar
+            let searchWord = e.target.value;
+            dropdown.innerHTML = ''; 
+
+            //once we have enough context on the name we can make an api call
+            if(searchWord.length >2){
+                // we clear the timeout on each input event to prevent stacking api calls 
+                clearTimeout(timeout);
+                //after the user enters an input we wait 1 sec to make api call
+                // if user types again previous request is cancelled 
+                timeout =  setTimeout( async () => {
+                    //get data
+                data = await getPatientNames(searchWord);
+                data.forEach(element => {
+                    //create list elements for each name in DB limit 10
+                const li = document.createElement('li');
+                li.setAttribute('id','search-result-list-item'+counter);
+                li.setAttribute('class','search-result-list-item');
+                counter++;
+                li.textContent = element.first_name + " " + element.last_name + "    " +element.mrn;
+                dropdown.appendChild(li);
+                
+                })
+                listValueSelect(data);
+                console.log(data);
+            }, 500); 
+
+            }
+             
+         })
+         
+        });
+
+        //when user clicks on search item 
+        // grab the name and mrn attach to url and 
+        //redirect to form with url params 
+        function listValueSelect(userData){
+          list = document.querySelectorAll('.search-result-list-item');
+          list.forEach(element => {
+            element.addEventListener('click', (e) => {
+                let selectedValue = e.target.id.slice(-1);
+                let formattedName = userData[selectedValue].first_name+'-'+userData[selectedValue].last_name;
+                let formattedMRN = userData[selectedValue].mrn;
+                formattedName = formattedName.replace(" ", "");
+                // pass on information to next page 
+                sessionStorage.setItem('selectedUserData', JSON.stringify(userData[selectedValue]));
+                //modify url
+                window.location.href = `/form?patient=${formattedName}&MRN=${formattedMRN}`;
+   
+          })
+
+        })
+    }
+
+        
+        //get information from db 
+        async function getPatientNames(patientName) {
+            const response = await fetch(`/search?query=${patientName}`);
+            let data = await response.json(); 
+            data = data.results.rows;
+            console.log(data)
+            return data;
+        }
+     </script>
 </body>
 </html>

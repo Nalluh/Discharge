@@ -153,6 +153,7 @@
     </form>
 <div class="button-container">
     <button id="discharge-request-submission">Submit</button>
+    <button id="edit-discharge-request">Save</button>
 </div>
 
 </main>
@@ -198,7 +199,47 @@
         }
     }
 
-    const oxygenStatus = document.getElementById("oxygen");
+    //check if we have params
+    //if we have params that means user looked up patient
+    //fill form with data and provide an edit button instead of submit
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.has('patient') && urlParams.has('MRN'))  {
+        //get data from current session
+     let data;
+     let oxygen = true;
+     const userData = JSON.parse(sessionStorage.getItem('selectedUserData'));
+     (async () => {
+        //get data from server
+     data =  await getPatientData(userData.patient_id);
+     console.log(data);
+        //Instantiate requestor, patient, trip 
+     const requestor = new PatientDischargeRequestor(data[0].name,data[0].ext,data[0].dept,data[0].hospital);
+     const patientDOB = data[0].dob.split("T"); 
+     console.log(patientDOB)
+     const patient = new Patient(data[0].first_name, data[0].last_name, data[0].phone_number, data[0].mrn, patientDOB[0], data[0].height, data[0].weight,data[0].gender,data[0].primary_language,data[0].room_number);
+    //if oxygen needed = 0 we dont need oxygen
+     if(data[0].oxygen_needed == 0){
+         oxygen = false;
+        }
+        //format date / time
+     const [date, time] = data[0].datetime.split("T"); 
+     const formattedTime = time.split(".")[0]; 
+    const trip = new Trip(date,formattedTime,data[0].address,data[0].transportation_type,oxygen,data[0].oxygen_needed,data[0].isolation_status,data[0].additional_info);
+    
+    //fill form with object information
+    fillForm(requestor,patient,trip);
+
+     
+     })();
+     
+     document.getElementById('discharge-request-submission').style.display = 'none';
+     document.getElementById('edit-discharge-request').style.display = 'block';
+
+   
+}
+// if no params in url that means user is filling in new form 
+    else {
+        const oxygenStatus = document.getElementById("oxygen");
     //when checkbox is clicked we append an input field to acquire the 
     // amount of oxygen that is needed 
     oxygenStatus.addEventListener("change",() =>
@@ -213,13 +254,24 @@
             }
         }
     )
-    let transportationType =''
-    document.querySelectorAll(".transportation-type").forEach(button => {
-        button.addEventListener("click", (event) => {
-            transportationType = button.value;
-        })
-    })
+    let transportationType = '';
+    let previousButton = null;
 
+document.querySelectorAll(".transportation-type").forEach(button => {
+    button.addEventListener("click", (event) => {
+        // remove the gray background from the previous button
+        if (previousButton) {
+            previousButton.style.backgroundColor = "";
+        }
+
+        // set the transportation type and apply gray background to the clicked button
+        transportationType = button.value;
+        button.style.backgroundColor = "gray";
+
+        // update the previous button reference
+        previousButton = button;
+    });
+});
 
     document.getElementById("discharge-request-submission").addEventListener("click", (event) => {
       event.preventDefault(); 
@@ -253,7 +305,7 @@
       let oxygen = oxygenStatus.checked;
       let isolation = document.getElementById("isolation").checked;
       //check if oxygen is true if so return amount else return 0
-      let amountOfOxygen = oxygen ? document.getElementsByName("patientOxygenAmount")[0].value + "L" : 0;
+      let amountOfOxygen = oxygen ? document.getElementsByName("patientOxygenAmount")[0].value  : 0;
     if(transportationType == ''){
         transportationType = "None";
     }
@@ -262,7 +314,9 @@
         // send information to backend 
       postDischargeRequest(requestor,patient,trip);
     });
+    }
 
+    // function to post discharge request to backend
     async function postDischargeRequest(PatientDischargeRequestor,Patient,Trip){
         const url = 'http://localhost:3000/discharges';
         const postData = {
@@ -270,7 +324,6 @@
            Patient:Patient,
            Trip:Trip
         };
-        console.log(postData)
         try{
             let response = await fetch(url,{
                 method: 'POST',
@@ -288,7 +341,73 @@
 
     }
 
+    //get data from backend
+    async function getPatientData(patient_id){
+        const response = await fetch(`/patients?patient_id=${patient_id}`);
+        if(response.ok){
+        let data = await response.json();
+        data = data.results.rows;
+        return data;
+        }
+        else{
+            console.log("Error");
+        }
+        
+    }
     
+    function fillForm(requestor, patient, trip) {
+    // fill out Requestor Information
+    document.querySelector("input[name='dischargeRequestedBy']").value = requestor.name;
+    document.querySelector("input[name='dischargeExtensionNumber']").value = requestor.extension;
+    document.querySelector("input[name='dischargeDeparment']").value = requestor.department;
+    document.querySelector(`input[name='dischargeHospital'][value='${requestor.hospital}']`).checked = true;
+
+    // fill out Patient Information
+    document.querySelector("input[name='patientFirstName']").value = patient.firstName;
+    document.querySelector("input[name='patientLastName']").value = patient.lastName;
+    document.querySelector("input[name='patientPhoneNumber']").value = patient.phoneNumber;
+    document.querySelector("input[name='patientMRN']").value = patient.mrn;
+    document.querySelector("input[name='patientDoB']").value = patient.dob;
+    document.querySelector("input[name='patientHeight']").value = patient.height;
+    document.querySelector("input[name='patientWeight']").value = patient.weight;
+    document.querySelector("input[name='patientGender']").value = patient.gender;
+    document.querySelector("input[name='patientLanguage']").value = patient.primaryLanguage;
+    document.querySelector("input[name='patientRoomNumber']").value = patient.roomNumber;
+
+    // fill out Trip Information
+    document.querySelector("input[name='patientDischargeDate']").value = trip.date;
+    document.querySelector("input[name='patientDischargeTime']").value = trip.time;
+    document.querySelector("input[name='patientDischargeAddress']").value = trip.address;
+    
+    // set transportation type buttons
+    document.querySelectorAll(".transportation-type").forEach(button => {
+        if (button.value === trip.transportationType) {
+            button.classList.add("selected");
+            button.style.backgroundColor = "gray";
+        } else {
+            button.classList.remove("selected");
+        }
+    });
+
+    // set Oxygen Needed checkbox
+    document.querySelector("input[name='patientOxygen']").checked = trip.oxygenNeeded;
+    if (trip.oxygenNeeded) {
+        let oxygenInputAmount = document.getElementById('oxygenAmount');
+        
+        oxygenInputAmount.style.display = 'flex';
+          
+        document.querySelector("input[name='patientOxygenAmount']").value = trip.amountOfOxygen;
+    }
+
+    // set Isolation checkbox
+    document.querySelector("input[name='patientIsolation']").checked = trip.isolation;
+    
+    // set additional information
+    document.querySelector("textarea[name='patientComments']").value = trip.additional_info;
+}
+
+
+   
 
 </script>
 </body>

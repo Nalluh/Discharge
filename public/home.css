@@ -174,10 +174,18 @@ input[type="button"]:hover {
   }
 
   #discharge-request-submission{
+    background-color: lightblue;
+  }
+
+  #discharge-request-submission,#edit-discharge-request{
     padding: 7px;
     margin: 10px;
     width: 100px;
     height: 30px;
+  }
+  
+  #discharge-request-submission:hover, #edit-discharge-request:hover{
+    background-color: gray;
   }
   .button-container{
     display: flex;
@@ -214,3 +222,7 @@ h1{
     padding: 4px;
 }
 
+#edit-discharge-request{
+    display: none;
+    background-color: lightgreen;
+}
