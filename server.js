@@ -62,10 +62,72 @@ app.get('/patients',(req,res) =>{
  
 });
 
+//when updating a form in db
+app.post("/edit-discharges", async (req,res) => {
+  const patient_id = req.body.Patient_ID;
+  const req_id = req.body.Req_ID;
+  
+  //use a transaction to update multiple tables in case of error in one query 
+  try{
+    const client = await pool.connect()
+    await client.query('BEGIN')
 
+
+    await client.query(
+      'Update public."DischargeRequestor" SET	dept = $1	,ext = $2,name = $3,	hospital = $4 WHERE req_id = $5',
+      [req.body.PatientDischargeRequestor.department,
+       req.body.PatientDischargeRequestor.extension,
+       req.body.PatientDischargeRequestor.name,
+       req.body.PatientDischargeRequestor.hospital,
+      req_id
+    ]
+    )
+
+    await client.query(
+      'UPDATE public."Patient" SET first_name = $1, last_name = $2, phone_number = $3, mrn = $4, dob = $5, height = $6, weight = $7, gender = $8, primary_language = $9, room_number = $10 WHERE patient_id = $11',
+      [
+        req.body.Patient.firstName,
+        req.body.Patient.lastName,
+        req.body.Patient.phoneNumber,
+        req.body.Patient.mrn,
+        req.body.Patient.dob,
+        req.body.Patient.height,
+        req.body.Patient.weight,
+        req.body.Patient.gender,
+        req.body.Patient.primaryLanguage,
+        req.body.Patient.roomNumber,
+        patient_id
+      ]
+  );
+
+  await client.query(
+    'update public."TripInformation" SET isolation_status = $1, oxygen_needed = $2,transportation_type = $3, address = $4,	additional_info = $5, date_needed = $6, time_needed = $7 WHERE patient_id = $8',
+    [
+      req.body.Trip.isolation,
+      req.body.Trip.amountOfOxygen,
+      req.body.Trip.transportationType,
+      req.body.Trip.address,
+      req.body.Trip.additional_info,
+      req.body.Trip.date,
+      req.body.Trip.time,
+      patient_id
+    ]
+  )
+
+  await client.query('COMMIT');
+  client.release();
+
+  res.status(200).send('Patient discharge updated successfully.');
+} catch (err) {
+  console.error('Error updating patient data:', err);
+  res.status(500).send('Internal server error.');
+}
+
+});
 //endpoint were we will handle posting to database
 app.post("/discharges", async (req, res) => {
   console.log("Request Body:", req.body ); 
+  try{
   // insert "DischargeRequestor" first so we can generate a request id
   let result = await pool.query(
     'INSERT INTO "DischargeRequestor" (dept, ext, name, hospital) VALUES ($1, $2, $3, $4) RETURNING req_id',
@@ -83,9 +145,16 @@ result = await pool.query(
     let patient_id = result.rows[0].patient_id;
     // using patient_id we can post the last portion into "TripInformation" to establish relationship between tables
 result = await pool.query(
-  'INSERT INTO "TripInformation" (patient_id,address,isolation_status,oxygen_needed,transportation_type,additional_info) VALUES ($1,$2,$3,$4,$5,$6)',
-  [patient_id, req.body.Trip.address,req.body.Trip.isolation,req.body.Trip.amountOfOxygen,req.body.Trip.transportationType,req.body.Trip.additional_info]
+  'INSERT INTO "TripInformation" (patient_id,address,isolation_status,oxygen_needed,transportation_type,additional_info,date,time) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
+  [patient_id, req.body.Trip.address,req.body.Trip.isolation,req.body.Trip.amountOfOxygen,req.body.Trip.transportationType,req.body.Trip.additional_info,
+    req.body.Trip.date,req.body.Trip.time ]
 );
+  
+res.status(200).send('Patient discharge successfully added.');
+} catch (err) {
+  console.error('Error updating patient data:', err);
+  res.status(500).send('Internal server error.');
+}
 
 
   
